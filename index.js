@@ -1,11 +1,23 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
-const bodyParser = require('body-parser');
-const path = require('path');
+import express from 'express';
+import sqlite3 from 'sqlite3';
+import bcrypt from 'bcryptjs';
+import bodyParser from 'body-parser';
+import path from 'path';
+import axios from 'axios';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+// Setup __dirname for ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 const db = new sqlite3.Database('users.db');
+
+dotenv.config();
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,20 +27,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Signup route
 app.post('/signup', async (req, res) => {
-    const { email, password } = req.body;  // Removed username from the request body
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    db.run('INSERT INTO users (email, password) VALUES (?, ?)',
-        [email, hashedPassword], function (err) {
-        if (err) {
-            return res.status(500).json({ error: 'User already exists or database error' });
-        }
-        res.status(201).json({ message: 'User created successfully' });
-    });
+    const { email, password } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        db.run('INSERT INTO users (email, password) VALUES (?, ?)', [email, hashedPassword], function (err) {
+            if (err) {
+                return res.status(500).json({ error: 'User already exists or database error' });
+            }
+            res.status(201).json({ message: 'User created successfully' });
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Error creating user' });
+    }
 });
 
 // Login route
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
@@ -39,9 +53,7 @@ app.post('/login', (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ error: 'Invalid credentials' });
         }
-        // Send the redirect URL in the response
         res.status(200).json({ message: 'Logged in successfully', redirect: '/dashboard' });
-        
     });
 });
 
@@ -61,6 +73,27 @@ app.get('/logout', (req, res) => {
 
     // For simplicity, just redirect to login
     res.redirect('/login.html');
+});
+
+app.get('/weather/:city', async (req, res) => {
+    const city = req.params.city;
+    const apiKey = process.env.API_KEY;
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
+
+    try {
+        const [currentWeather, forecast] = await Promise.all([
+            axios.get(currentWeatherUrl),
+            axios.get(forecastUrl)
+        ]);
+
+        res.json({
+            currentWeather: currentWeather.data,
+            forecast: forecast.data.list,
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching weather data' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;

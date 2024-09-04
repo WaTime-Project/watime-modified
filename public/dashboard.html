@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <div class="nav-tabs">
@@ -16,18 +20,38 @@
         <a href="#profile" class="active">Logout</a>
     </div>
 
-    <!-- <div class="dashboard-container">
-        <div class="dashboard-header">
-            <h1>Welcome to  WaTime App</h1>
-            <p>You have successfully logged in!</p>
-        </div> -->
+    <div id="weather-container" x-data="weatherApp()">
+        <h2>WaTime App</h2>
+        <input type="text" id="city" placeholder="Enter city" x-model="city">
+        <button @click="getWeather">Search</button>
 
-       
+        <img id="weather-icon" :src="weatherIconUrl" x-show="weatherIconUrl" alt="Weather Icon">
 
-        <!-- Logout Button -->
-        <!-- <div class="dashboard-footer">
+        <div id="temp-div" x-text="temperature"></div>
+        <div id="weather-info">
+            <p x-text="cityName"></p>
+            <p x-text="description"></p>
+        </div>
+
+        <div id="hourly-forecast">
+            <template x-for="hour in hourlyForecast">
+                <div class="hourly-item">
+                    <span x-text="hour.time"></span>
+                    <img :src="hour.iconUrl" alt="Hourly Weather Icon">
+                    <span x-text="hour.temp"></span>
+                </div>
+            </template>
+        </div>
+    </div>
+
+  <!-- Logout Button -->
+    <!-- <div class="dashboard-footer">
             <a href="/logout" class="logout-link">Logout</a>
         </div> -->
     </div>
+
+    <script src="functionality.js"></script>
+
 </body>
+
 </html>
