@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
+    <!-- OpenCage Geocoder Autocomplete Script -->
+    <script src="https://api.opencagedata.com/geosearch-js/v1/opencage-geosearch.js"></script>
+
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="styles.css">
@@ -26,8 +30,10 @@
 
     <div class="dashboard-container" x-data="weatherApp()">
         <h2 class="wat-title">WaTime App</h2>
-        <input type="text" class="city" placeholder="Enter city" x-model="city">
-        <button class="city-btn" @click="getWeather">Search</button>
+        <input type="text" class="city" id="city-autocomplete" placeholder="Enter city" x-model="city">
+        <button class="city-btn" @click="getWeatherByCity">Search</button>
+        <button class="location-btn" @click="getWeatherByLocation">Use My Location</button>
+
 
         <img id="weather-icon" :src="weatherIconUrl" x-show="weatherIconUrl" alt="Weather Icon">
 
@@ -53,6 +59,27 @@
             <a href="/logout" class="logout-link">Logout</a>
         </div> -->
     </div>
+
+    <script>
+        // Initialize OpenCage Autocomplete
+        const geosearch = new OpenCage.GeoSearch({
+            key: 'd8e347904ec4467d8eedcd7ec2b84544', // Replace with your OpenCage API key
+            limit: 5 // Limit to 5 suggestions
+        });
+
+        geosearch.autocomplete('city-autocomplete'); // Attach autocomplete to the input field
+
+        // Listen for autocomplete selection
+        document.querySelector('#city-autocomplete').addEventListener('geosearch:select', function (event) {
+            const place = event.detail;
+            console.log('Selected place:', place);
+            
+            // You can access place.geometry.lat and place.geometry.lng for coordinates
+            const selectedCity = place.formatted;
+            // Handle selected city (e.g., update Alpine.js state and trigger weather fetch)
+            Alpine.store('weatherApp').city = selectedCity; // Update Alpine.js data
+        });
+    </script>
 
     <script src="functionality.js"></script>
 

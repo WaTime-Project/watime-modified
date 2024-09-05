@@ -7,14 +7,64 @@ function weatherApp() {
         weatherIconUrl: '',
         hourlyForecast: [],
 
-        async getWeather() {
+        async getWeatherByCity() {
             if (!this.city) {
                 alert('Please enter a city');
                 return;
             }
+            await this.fetchWeather(`http://localhost:3000/weather/${this.city}`);
+        },
 
+        async getWeatherByLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    async position => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+        
+                        // Log the latitude and longitude to the console
+                        console.log(`Location fetched: Latitude = ${lat}, Longitude = ${lon}`);
+        
+                        // Get the city name from the coordinates using OpenCage Geocoder API
+                        const cityName = await this.getCityName(lat, lon);
+                        console.log(`City Name: ${cityName}`);
+                        
+                        // Use the cityName for any further operations if needed
+                        this.city = cityName;
+        
+                        // Fetch weather data based on the location
+                        const url = `http://localhost:3000/weather/${cityName}`;
+                        await this.fetchWeather(url);
+                    },
+                    error => {
+                        console.error('Error getting location:', error);
+                        alert('Unable to retrieve your location. Please enter a city manually.');
+                    }
+                );
+            } else {
+                alert('Geolocation is not supported by this browser.');
+            }
+        },
+        async getCityName(lat, lon) {
+            const apiKey = 'd8e347904ec4467d8eedcd7ec2b84544'; // Replace with your OpenCage API key
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${apiKey}`;
+        
             try {
-                const response = await axios.get(`http://localhost:3000/weather/${this.city}`);
+                const response = await axios.get(url);
+                const data = response.data;
+                
+                // Extract city name from the OpenCage response
+                const city = data.results[0].components.city || data.results[0].components.town || data.results[0].components.village;
+                return city || 'Unknown Location'; // Fallback to 'Unknown Location' if no city name is found
+            } catch (error) {
+                console.error('Error fetching city name:', error);
+                return 'Unknown Location';
+            }
+        },
+
+        async fetchWeather(url) {
+            try {
+                const response = await axios.get(url);
                 const data = response.data;
 
                 this.cityName = data.currentWeather.name;
@@ -34,6 +84,7 @@ function weatherApp() {
         }
     };
 }
+
 
 function displayWeather(data) {
     const temperatureInfo = document.querySelector('.temperatureContainer');

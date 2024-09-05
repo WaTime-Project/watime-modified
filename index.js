@@ -77,7 +77,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/weather/:city', async (req, res) => {
     const city = req.params.city;
-    const apiKey = process.env.API_KEY;
+    const apiKey = '1233d72f3902757e52874de28a6e5e60';
     const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
     const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
 
@@ -92,7 +92,29 @@ app.get('/weather/:city', async (req, res) => {
             forecast: forecast.data.list,
         });
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching weather data' });
+        res.status(500).json({ error: 'Error fetching weather data', error });
+    }
+});
+
+app.get('/weather/location', async (req, res) => {
+    const lat = req.query.lat;
+    const lon = req.query.lon;
+
+    if (!lat || !lon) {
+        return res.status(400).json({ error: 'Missing latitude or longitude' });
+    }
+
+    try {
+        const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=YOUR_API_KEY`);
+        const forecastResponse = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=YOUR_API_KEY`);
+
+        res.json({
+            currentWeather: weatherResponse.data,
+            forecast: forecastResponse.data.list
+        });
+    } catch (error) {
+        console.error('Error fetching weather data:', error);
+        res.status(500).json({ error: 'Failed to fetch weather data' });
     }
 });
 
