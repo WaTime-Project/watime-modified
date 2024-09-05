@@ -26,7 +26,7 @@
 
     <div class="dashboard-container" x-data="weatherApp()">
         <h2 class="wat-title">WaTime App</h2>
-        <input type="text" class="city" placeholder="Enter city" x-model="city">
+        <input type="text" class="city" placeholder="Enter your location" x-model="city">
         <button class="city-btn" @click="getWeather">Search</button>
 
         <img id="weather-icon" :src="weatherIconUrl" x-show="weatherIconUrl" alt="Weather Icon">
