@@ -19,12 +19,13 @@
             <h2 class="form-title">WaTime App</h2>
             <!-- Login Form -->
             <form @submit.prevent="login">
+                <h2>Welcome Back</h2>
                 <input type="email" x-model="loginEmail" placeholder="Email" required>
                 <input type="password" x-model="loginPassword" placeholder="Password" required>
                 <button type="submit">Login</button>
             </form>
 
-            <p x-text="message"></p>
+            <p style="color: red;" x-text="message"></p>
 
             <a href="signup.html" class="switch-link">Don't have an account? Sign up here</a>
         </div>

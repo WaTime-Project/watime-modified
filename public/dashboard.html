@@ -12,18 +12,22 @@
 
 <body>
 
-    <div class="nav-tabs">
-        <a href="#home" class="active">WaTime</a>
-        <a href="#home" class="active">Home</a>
-        <a href="#tips" class="active">Tips</a>
-        <a href="#profile" class="active">Profile</a>
-        <a href="#profile" class="active">Logout</a>
-    </div>
+    <!-- Overlay div -->
+    <div class="overlay"></div>
 
-    <div id="weather-container" x-data="weatherApp()">
-        <h2>WaTime App</h2>
-        <input type="text" id="city" placeholder="Enter city" x-model="city">
-        <button @click="getWeather">Search</button>
+    <nav class="navbar">
+        <ul class="navbar-links">
+            <li><a href="/dashboard" class="nav-link">Home</a></li>
+            <li><a href="/tips" class="nav-link">Tips</a></li>
+            <li><a href="/profile" class="nav-link">Profile</a></li>
+            <li><a href="/logout" class="nav-link">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-container" x-data="weatherApp()">
+        <h2 class="wat-title">WaTime App</h2>
+        <input type="text" class="city" placeholder="Enter city" x-model="city">
+        <button class="city-btn" @click="getWeather">Search</button>
 
         <img id="weather-icon" :src="weatherIconUrl" x-show="weatherIconUrl" alt="Weather Icon">
 

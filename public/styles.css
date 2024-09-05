@@ -3,7 +3,8 @@ body, input, button {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #c7eebb;
+    background-color: #f4f4f4;
+    position: relative;
 }
 
 /* Center the form on the page */
@@ -18,13 +19,51 @@ body {
 
 /* Overlay styling */
 .overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
     z-index: 1;
+}
+
+/* Navigation Bar */
+.navbar {
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+    padding: 15px 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Navigation Links */
+.navbar-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.navbar-links li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+.navbar-links .nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar-links .nav-link:hover {
+    color: #9e9e9e; /* Highlight on hover */
 }
 
 /* Content wrapper */
@@ -70,7 +109,7 @@ input[type="text"], input[type="email"], input[type="password"] {
 button {
     width: 100%;
     padding: 12px;
-    background-color: #c7eebb;
+    background-color: black;
     border: none;
     border-radius: 4px;
     color: white;
@@ -79,14 +118,23 @@ button {
 }
 
 button:hover {
-    background-color: #afdfc5;
+    background-color: rgb(29, 29, 29);
 }
 
 /* Message paragraph styling */
 p {
     margin-top: 20px;
-    color: #ff0000;
+    color: white;
     text-align: center;
+}
+
+.log-btn{
+    color: #40da11;
+    text-decoration: none;
+}
+
+.log-btn:hover{
+    color: #07ff3d;
 }
 
 /* Optional: Styling for a link to switch between login/signup pages */
@@ -106,16 +154,19 @@ p {
 
 /* Dashboard Container */
 .dashboard-container {
-    max-width: 600px;
-    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    /* max-width: 600px; */
+    /* margin: 100px auto 0;  */
     padding: 40px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* background-color: #ffffff; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     text-align: center;
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+    position: relative; */
+    /* top: 50%;
+    transform: translateY(-50%); */
+    
 }
 
 /* Dashboard Header */
@@ -123,7 +174,6 @@ p {
     margin-bottom: 10px;
     font-size: 2em;
     color: #333;
-    text-align: center;
 }
 
 .dashboard-header p {
@@ -155,29 +205,6 @@ p {
 .dashboard-footer {
     margin-top: 20px;
 }
-.nav-tabs {
-    display: flex;
-    justify-content: space-around;
-    background-color: #333;
-    padding: 10px 0;
-    margin-bottom: 20px;
-}
-.nav-tabs a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.nav-tabs a:hover {
-    background-color: #555;
-}
-
-.nav-tabs a.active {
-    background-color: #c7eebb;
-    border-radius: 10%;
-}
 
 .weatherContainer{
     background: rgba(255, 255, 255, 0.3);
@@ -188,80 +215,17 @@ p {
     /* backdrop-filter: blur(10px); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
+    z-index: 2;
 }
 
-h1, label, p{
-    color: white;
-    margin: 8px 0;
-}
-
-input{
-    width: calc(100% - 16px);
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 10px;
-    border: 1px solid white;
-    margin-top: 20px;
-}
-
-button{
-    background-color: #debff4;
-    color:white;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100px;
-    font-size: 15px;
-}
-
-button:hover{
-    background: #8b48d7;
-}
-
-.temperatureContainer p{
-    font-size: 60px;
-    margin-top: -30px;
-}
-
-.weatherInfo{
-    font-size: 20px;
-}
-
-.weatherIcon{
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 10px;
-    margin-bottom: 0;
-    display: none;
-}
-
-.hourlyForecast{
-    margin-top: 50px;
-    overflow-x: auto;
-    white-space: nowrap;
-    display: flex;
-    justify-content: space-between;
-}
-
-.hourlyItem{
-    flex: 0 0 auto;
-    width: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 10px;
+.wat-title{
     color: white;
 }
 
-.hourlyItem img{
-    width: 30px;
-    height: 30px;
-    margin-bottom: 5px;
+.city{
+    max-width: 25%;
 }
 
-#hourly-heading{
-    color: white;
-    margin-top: 10px;
+.city-btn{
+    max-width: 10%;
 }

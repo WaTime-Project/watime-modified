@@ -17,13 +17,14 @@
             <h2 class="form-title">Sign Up for WaTime</h2>
             <!-- Signup Form -->
             <form @submit.prevent="signup">
+                <h2>Register</h2>
                 <input type="email" x-model="email" placeholder="Email" required>
                 <input type="password" x-model="password" placeholder="Password" required>
                 <input type="password" x-model="confirmPassword" placeholder="Confirm Password" required>
                 <button type="submit">Sign Up</button>
             </form>
     
-            <p>Already have an account? <a href="login.html">Login here</a></p>
+            <p>Already have an account? <a class="log-btn" href="login.html">Login here</a></p>
     
             <p x-text="message"></p>
         </div>
