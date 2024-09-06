@@ -55,7 +55,7 @@ function weatherApp() {
                 
                 // Extract city name from the OpenCage response
                 const city = data.results[0].components.city || data.results[0].components.town || data.results[0].components.village;
-                return city || 'Unknown Location'; // Fallback to 'Unknown Location' if no city name is found
+                return city || 'Johannesburg'; // Fallback to 'Unknown Location' if no city name is found
             } catch (error) {
                 console.error('Error fetching city name:', error);
                 return 'Unknown Location';

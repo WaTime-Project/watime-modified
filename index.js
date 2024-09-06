@@ -61,6 +61,17 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
+app.get('/tips', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'tips.html'));
+});
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'));
+});
+
+app.get('/myfield', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'myfield.html'));
+});
+
 app.get('/logout', (req, res) => {
     // If using sessions, you would destroy the session here
     // req.session.destroy(err => {
