@@ -74,6 +74,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100%;
+    
 }
 
 /* Form title styling */
@@ -308,3 +309,25 @@ p {
 .location-btn{
     max-width: 20%;
 }
+
+.tips {
+    margin: 50px;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+    background-image: url('assests/ash.jpg');
+    background-repeat: no-repeat;
+    background-position:1000%; 
+    background-size: 600px 100%;
+    display:flex;
+}
+.tips h1 {
+    text-align:center;
+    text-decoration:underline;
+    color: white;
+    margin-bottom: 10px; /* Add space below heading */
+}
+.tip p {
+    flex: 1; /* Allows the paragraph to take up remaining space */
+}
+
+
+
