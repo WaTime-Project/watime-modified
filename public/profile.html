@@ -5,6 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .tab-content {
+            max-width: 400px; /* Adjusted max width for better fit */
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Add margin to separate it from the profile heading */
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+    
+        .update-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        
+       
+    </style>
+    <script>
+        // JavaScript to handle form submission and retain the form data
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const updateButton = document.getElementById('update-button');
+
+            // Disable input fields initially
+            emailInput.disabled = true;
+            passwordInput.disabled = true;
+
+            // Check if there is saved profile data in localStorage
+            if (localStorage.getItem('profileData')) {
+                const profileData = JSON.parse(localStorage.getItem('profileData'));
+                emailInput.value = profileData.email || '';
+                // Password should not be auto-filled for security reasons
+            }
+
+            // Handle update button click
+            updateButton.addEventListener('click', function() {
+                if (updateButton.textContent === 'Update') {
+                    // Enable fields for editing
+                    emailInput.disabled = false;
+                    passwordInput.disabled = false;
+                    updateButton.textContent = 'Save'; // Change button text to indicate action
+                } else if (updateButton.textContent === 'Save') {
+                    // Save profile data
+                    const email = emailInput.value;
+                    const password = passwordInput.value;
+
+                    const profileData = {
+                        email: email,
+                        password: password
+                    };
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+
+                    // Disable fields again
+                    emailInput.disabled = true;
+                    passwordInput.disabled = true;
+                    updateButton.textContent = 'Update'; // Revert button text
+
+                    alert('Profile updated successfully!');
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <nav class="navbar">
@@ -16,9 +114,23 @@
         </ul>
     </nav>
 
-    <div class="content">
-        <h2>Your Profile</h2>
-        <p>Manage your personal details here.</p>
+    <div class="profile">
+        <h1>Your Profile</h1>
+        <div class="tab-content" id="details">
+            <form id="details-form">
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="button-group">
+                    <button type="button" id="update-button" class="update-button">Update</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
