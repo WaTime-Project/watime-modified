@@ -52,6 +52,8 @@ function weatherApp() {
             try {
                 const response = await axios.get(url);
                 const data = response.data;
+
+                console.log('city data', data)
                 
                 // Extract city name from the OpenCage response
                 const city = data.results[0].components.city || data.results[0].components.town || data.results[0].components.village;
