@@ -135,7 +135,7 @@ canvas {
 }
 
 /* Media query for smaller screens */
-@media (max-width: 400px) {
+@media (max-width: 768px) {
     .chart-container {
         flex-direction: column; /* Stack charts on top of each other */
     }
