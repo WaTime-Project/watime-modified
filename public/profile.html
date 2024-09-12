@@ -54,25 +54,55 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        
-       
+
+        .profile-picture-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .profile-picture {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #ddd;
+            background-color: #f4f4f4;
+            object-fit: cover;
+        }
+
+        input[type="file"] {
+            display: none; /* Hide file input */
+        }
     </style>
     <script>
         // JavaScript to handle form submission and retain the form data
         document.addEventListener('DOMContentLoaded', function() {
             const emailInput = document.getElementById('email');
             const passwordInput = document.getElementById('password');
+            const usernameInput = document.getElementById('username');
+            const cityInput = document.getElementById('city');
+            const profilePicInput = document.getElementById('profile-pic');
             const updateButton = document.getElementById('update-button');
+            const profilePicContainer = document.querySelector('.profile-picture-container');
 
             // Disable input fields initially
             emailInput.disabled = true;
             passwordInput.disabled = true;
+            usernameInput.disabled = true;
+            cityInput.disabled = true;
 
             // Check if there is saved profile data in localStorage
             if (localStorage.getItem('profileData')) {
                 const profileData = JSON.parse(localStorage.getItem('profileData'));
                 emailInput.value = profileData.email || '';
-                // Password should not be auto-filled for security reasons
+                passwordInput.value = profileData.password || '';
+                usernameInput.value = profileData.username || '';
+                cityInput.value = profileData.city || '';
+                if (profileData.profilePic) {
+                    document.getElementById('profile-pic-img').src = profileData.profilePic;
+                }
             }
 
             // Handle update button click
@@ -81,25 +111,54 @@
                     // Enable fields for editing
                     emailInput.disabled = false;
                     passwordInput.disabled = false;
+                    usernameInput.disabled = false;
+                    cityInput.disabled = false;
+                    profilePicInput.disabled = false;
                     updateButton.textContent = 'Save'; // Change button text to indicate action
                 } else if (updateButton.textContent === 'Save') {
                     // Save profile data
                     const email = emailInput.value;
                     const password = passwordInput.value;
+                    const username = usernameInput.value;
+                    const city = cityInput.value;
+                    const profilePic = profilePicInput.files[0] ? URL.createObjectURL(profilePicInput.files[0]) : '';
 
                     const profileData = {
                         email: email,
-                        password: password
+                        password: password,
+                        username: username,
+                        city: city,
+                        profilePic: profilePic
                     };
                     localStorage.setItem('profileData', JSON.stringify(profileData));
 
                     // Disable fields again
                     emailInput.disabled = true;
                     passwordInput.disabled = true;
+                    usernameInput.disabled = true;
+                    cityInput.disabled = true;
+                    profilePicInput.disabled = true;
                     updateButton.textContent = 'Update'; // Revert button text
 
                     alert('Profile updated successfully!');
                 }
+            });
+
+            // Handle profile picture change
+            profilePicInput.addEventListener('change', function() {
+                const file = profilePicInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('profile-pic-img').src = event.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Trigger file input on profile picture click
+            profilePicContainer.addEventListener('click', function() {
+                profilePicInput.click();
             });
         });
     </script>
@@ -117,10 +176,22 @@
     <div class="profile">
         <h1>Your Profile</h1>
         <div class="tab-content" id="details">
+            <div class="profile-picture-container">
+                <img id="profile-pic-img" class="profile-picture" src="default-profile-pic.jpg" alt="Profile Picture">
+                <input type="file" id="profile-pic" name="profile-pic" accept="image/*">
+            </div>
             <form id="details-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
                 <div class="form-group">
                     <label for="email">Email Address:</label>
                     <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
