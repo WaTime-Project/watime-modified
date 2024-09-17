@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
             labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             datasets: [{
                 label: 'Water Usage (Liters)',
-                data: [1200, 1100, 1000, 1300, 1200, 1400, 0],
+                data: [1200, 1100, 1000, 1300, 1200, 1400, 220],
                 backgroundColor: 'rgba(0, 123, 255, 0.2)',
                 borderColor: 'rgba(0, 123, 255, 1)',
                 borderWidth: 2

@@ -9,8 +9,8 @@ body, input, button {
 
 /* Center the form on the page */
 body {
-    height: 100vh;
-    /* Path to your image */
+    /* height: 100vh; */
+    background-image: url('assets/ash.jpg'); /* Path to your image *//* Path to your image */
     background-size: cover; /* Ensures the image covers the entire background */
     background-position: center; /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
