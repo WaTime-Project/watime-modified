@@ -6,6 +6,11 @@ function weatherApp() {
         description: '',
         weatherIconUrl: '',
         hourlyForecast: [],
+        prediction: null,
+        error: null,
+        loading: false,
+        irrigationThreshold: 20,
+        irrigateDecision:'',
 
         async getWeatherByCity() {
             if (!this.city) {
@@ -13,6 +18,77 @@ function weatherApp() {
                 return;
             }
             await this.fetchWeather(`http://localhost:3000/weather/${this.city}`);
+        },
+        async getWeatherData() {
+            const url = `http://localhost:3000/weather/${this.city}`;
+        
+            try {
+                console.log('Fetching weather data from OpenWeatherMap API...');
+                const response = await axios.get(url);
+                console.log('Weather data fetched:', response.data);
+                const weatherData = response.data.currentWeather;
+                return weatherData;
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                throw new Error('Error fetching weather data');
+            }
+        },
+        
+        async extractWeatherFeatures() {
+            try {
+                console.log('Extracting features...');
+                const weatherData = await this.getWeatherData();
+                console.log('Raw weather data:', weatherData);
+        
+                const features = [
+                    weatherData.main.temp - 273.15,  
+                    weatherData.main.humidity,  
+                    weatherData.rain && weatherData.rain['1h'] ? weatherData.rain['1h'] : 0, 
+                    weatherData.main.pressure,  
+                    weatherData.clouds.all, 
+                    weatherData.wind.deg,
+                    weatherData.snow && weatherData.snow['1h'] ? weatherData.snow['1h'] : 0, 
+                    weatherData.wind.speed, 
+                    weatherData.wind.gust ? weatherData.wind.gust : 0 
+                ];
+        
+                console.log('Extracted features:', features);
+                return features;
+            } catch (error) {
+                console.error('Error extracting weather features:', error);
+                throw new Error('Error extracting weather features');
+            }
+        }
+        ,
+        
+        async getSoilMoisturePrediction() {
+            this.loading = true;
+            this.prediction = null;
+            this.error = null;
+
+            try {
+                const features = await this.extractWeatherFeatures();
+        
+                const response = await axios.post('http://localhost:3000/predict', {
+                    features: features
+                });
+        
+                const predictionData = response.data;
+
+                this.prediction = predictionData.prediction;
+                this.irrigateDecision = this.shouldIrrigate(this.prediction);
+                console.log('Prediction Data:', predictionData);
+        
+                return predictionData;
+            } catch (error) {
+                console.error('Error making prediction:', error);
+                alert('Error making prediction. Please try again.');
+            } finally {
+                this.loading = false;
+            }
+        },
+        shouldIrrigate(predictedMoisture) {
+            return predictedMoisture < this.irrigationThreshold ? 'Irrigate' : 'Do not irrigate';
         },
 
         async getWeatherByLocation() {
@@ -117,6 +193,13 @@ function displayWeather(data) {
 
         showImage();
     }
+}
+
+function formatPrediction(prediction) {
+    if (typeof prediction === 'object') {
+        return JSON.stringify(prediction, null, 2);  
+    }
+    return prediction;  
 }
 
 function displayHourlyForecast(hourlyData) {
