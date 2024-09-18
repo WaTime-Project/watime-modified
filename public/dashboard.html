@@ -50,13 +50,34 @@
                 </div>
             </template>
         </div>
+
+        <div class="container">
+            <h1>Irrigation Prediction</h1>
+        
+            <button @click="getSoilMoisturePrediction">Get Prediction</button>
+        
+            <div x-show="loading">Loading prediction...</div>
+        
+            <div x-show="!loading && prediction !== null">
+              <!-- <h2>Prediction Result:
+                <pre x-text="formatPrediction(prediction)"></pre>
+              </h2> -->
+              <!-- <p x-text="irrigateDecision"></p> -->
+               <h3 x-text="irrigateDecision"></h3>
+            </div>
+        
+        
+            <div x-show="error !== null">
+              <h2>Error: <span x-text="error"></span></h2>
+            </div>
+          </div>
     </div>
 
   <!-- Logout Button -->
     <!-- <div class="dashboard-footer">
             <a href="/logout" class="logout-link">Logout</a>
         </div> -->
-    </div>
+    <!-- </div> -->
 
     <script>
         // Initialize OpenCage Autocomplete
