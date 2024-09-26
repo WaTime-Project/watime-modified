@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="myfield.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/alpinejs" defer></script>
-    <script src="myfield.js" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="myfield.js"></script>
 </head>
 
 <body>
@@ -22,6 +23,7 @@
         </ul>
     </nav>
    
+    <!-- Single x-data declaration for the entire container -->
     <div class="container" x-data="irrigationData()">
         <div class="section">
           <h2>Monitoring Charts</h2>
@@ -53,13 +55,13 @@
           </div>
   
           <!-- Display Alerts -->
-      <div class="alerts">
-          <p x-text="alerts"></p> <!-- Show alerts dynamically -->
-      </div>
+          <div class="alerts">
+              <p x-text="alerts"></p> <!-- Show alerts dynamically -->
+          </div>
         </div>
   
         <!-- Enhanced status cards -->
-        <div class="section status-cards" x-data="irrigationData()">
+        <div class="section status-cards">
           <div class="status-card">
             <img class="icon-image" src="assets/temparature.png" alt="Temperature" />
             <h3>Temperature</h3>
@@ -84,6 +86,7 @@
             <p>Status: <span x-text="status"></span></p>
           </div>
         </div>
+
       </div>
 </body>
 

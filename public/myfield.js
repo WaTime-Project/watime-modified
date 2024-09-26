@@ -1,32 +1,67 @@
 // Define the irrigationData function globally for Alpine.js
-function irrigationData() {
-
-    
-    return {
-        temperature: "25°C",
-        forecast: "Sunny",
+document.addEventListener('alpine:init', () => {
+    Alpine.data('irrigationData', () => ({
+        temperature: "",
+        forecast: "",
         nextWatering: "Tomorrow, 5:00 AM",
         alerts: "System is ready.", // Single definition for alerts
         isIrrigating: false, // Track if irrigation is running
         status: "All good",
+        city: '',  // Optionally, set a default city
+        cityName: '',
+        hourlyForecast: [], // To store hourly forecast data
 
         startIrrigation() {
             this.isIrrigating = true;
             this.alerts = "Irrigation started!";
-            
         },
 
         stopIrrigation() {
             this.isIrrigating = false;
             this.alerts = "Irrigation stopped!";
-            
+        },
+
+        async fetchWeather() {
+            try {
+                const url = `http://localhost:3000/weather/${this.city || 'johannesburg'}`;
+                console.log(`Fetching weather data from: ${url}`);
+                
+                const response = await axios.get(url);
+                const data = response.data;
+
+                // Update reactive properties
+                this.cityName = data.currentWeather.name;
+                this.temperature = Math.round(data.currentWeather.main.temp - 273.15) + '°C'; // Convert Kelvin to Celsius
+                this.forecast = data.currentWeather.weather[0].description;
+                this.weatherIconUrl = `https://openweathermap.org/img/wn/${data.currentWeather.weather[0].icon}@4x.png`;
+
+                this.hourlyForecast = data.forecast.slice(0, 8).map(item => ({
+                    time: new Date(item.dt * 1000).getHours() + ':00',
+                    temp: Math.round(item.main.temp - 273.15) + '°C',
+                    iconUrl: `https://openweathermap.org/img/wn/${item.weather[0].icon}.png`,
+                }));
+
+                // Trigger a DOM update after async operation is done
+                this.$nextTick(() => {
+                    console.log('Weather data updated successfully. Temperature is now:', this.temperature);
+                });
+
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                alert('Error fetching weather data. Please try again.');
+            }
+        },
+
+        // Automatically call the fetchWeather when the component is initialized
+        init() {
+            this.fetchWeather();
         }
-    }
-}
+    }));
+});
 
 // Use DOMContentLoaded for non-Alpine.js specific operations like chart rendering
 document.addEventListener('DOMContentLoaded', function() {
-    // Water Usage Chart
+    // Initialize Water Usage Chart
     const ctxWaterUsage = document.getElementById('waterUsageChart').getContext('2d');
     const waterUsageChart = new Chart(ctxWaterUsage, {
         type: 'line',
@@ -49,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Moisture Level Chart
+    // Initialize Moisture Level Chart
     const ctxMoistureLevel = document.getElementById('moistureLevelChart').getContext('2d');
     const moistureLevelChart = new Chart(ctxMoistureLevel, {
         type: 'bar',
